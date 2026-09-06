@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ran2wiki"
+version = "0.1.0"
+description = "Local-first 3GPP RAN2 Rel-20 / 6G research knowledge base"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.27,<1",
+  "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+ingest = [
+  "openpyxl>=3.1,<4",
+  "python-docx>=1.1,<2",
+  "python-pptx>=1.0,<2",
+  "pypdf>=5,<7",
+]
+mcp = ["mcp>=1.10,<3"]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+ran2wiki = "ran2wiki.cli:main"
+ranwiki = "ran2wiki.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ran2wiki"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

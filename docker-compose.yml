@@ -1,0 +1,65 @@
+services:
+  ran2wiki-mcp:
+    build: .
+    restart: unless-stopped
+    environment:
+      RAN2WIKI_CONFIG: /config/config.yaml
+      RAN2WIKI_MCP_HOST: 0.0.0.0
+      RAN2WIKI_MCP_PORT: 8000
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+      - ./data:/app/data
+    expose:
+      - "8000"
+    networks: [ran2-private]
+
+  ran2wiki-web:
+    build: .
+    restart: unless-stopped
+    command: ["python", "-m", "ran2wiki.web.server"]
+    environment:
+      RAN2WIKI_CONFIG: /config/config.yaml
+      RAN2WIKI_WEB_HOST: 0.0.0.0
+      RAN2WIKI_WEB_PORT: 8080
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+      - ./data:/app/data:ro
+    ports:
+      - "${TAILSCALE_BIND_ADDRESS:-127.0.0.1}:${RAN2WIKI_WEB_PORT:-3000}:8080"
+    networks: [ran2-private]
+
+  ran2wiki-update:
+    build: .
+    profiles: [jobs]
+    restart: "no"
+    command: ["ran2wiki", "update"]
+    environment:
+      RAN2WIKI_CONFIG: /config/config.yaml
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+      - ./data:/app/data
+    networks: [ran2-private]
+
+  # Preserved for explicitly configured future LLM integration.
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_IMAGE_TAG:-v0.6.42}
+    profiles: [llm]
+    restart: unless-stopped
+    depends_on: [ran2wiki-mcp]
+    environment:
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
+      ENABLE_OPENAI_API: "false"
+      ENABLE_OLLAMA_API: "false"
+    volumes:
+      - open-webui-data:/app/backend/data
+    ports:
+      # Set this to the mini PC's tailscale0 IPv4; default is local-only.
+      - "${TAILSCALE_BIND_ADDRESS:-127.0.0.1}:${OPEN_WEBUI_PORT:-3001}:8080"
+    networks: [ran2-private]
+
+networks:
+  ran2-private:
+    internal: false
+
+volumes:
+  open-webui-data:

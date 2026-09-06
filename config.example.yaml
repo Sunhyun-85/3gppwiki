@@ -1,0 +1,41 @@
+scope:
+  group: RAN2
+  include_rel20: true
+  include_6g: true
+  # RAN2#125 (March 2024) is the first meeting on/after Rel-20 creation.
+  # It preserves planning context; relevance is still classified per item.
+  start_meeting: "125"
+  end_meeting: null
+
+paths:
+  data_dir: data
+  database: data/db/ran2wiki.db
+
+source:
+  base_url: https://www.3gpp.org/ftp/tsg_ran/WG2_RL2
+  download_base_url: https://ftp.3gpp.org/tsg_ran/WG2_RL2
+  timeout_seconds: 60
+  recent_meetings_to_recheck: 3
+  download_workers: 4
+
+classification:
+  rel20_keywords: [Rel-20, Release 20, NR evolution]
+  six_g_keywords: [6G, IMT-2030, new radio access technology, next generation radio]
+  rel20_work_items: []
+  six_g_work_items: []
+
+# Group expansion registry. RAN3/RAN4 remain disabled until their actual
+# closed-network repository structures and representative files are inspected.
+repositories:
+  RAN2:
+    enabled: true
+    base_url: https://www.3gpp.org/ftp/tsg_ran/WG2_RL2
+    download_base_url: https://ftp.3gpp.org/tsg_ran/WG2_RL2
+    start_meeting: "125"
+    end_meeting: null
+  RAN3:
+    enabled: false
+    base_url: null
+  RAN4:
+    enabled: false
+    base_url: null

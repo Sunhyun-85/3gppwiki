@@ -1,0 +1,17 @@
+.env
+config.yaml
+.venv/
+.agents/
+.codex/
+.release-git/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.devdeps/
+dist/
+data/raw/*
+data/extracted/*
+data/db/*
+!data/raw/.gitkeep
+!data/extracted/.gitkeep
+!data/db/.gitkeep

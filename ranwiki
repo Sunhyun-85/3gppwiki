@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eu
+RANWIKI_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ -d "$RANWIKI_ROOT/.devdeps" ]; then
+  export PYTHONPATH="$RANWIKI_ROOT/src:$RANWIKI_ROOT/.devdeps${PYTHONPATH:+:$PYTHONPATH}"
+else
+  export PYTHONPATH="$RANWIKI_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+fi
+exec python3 -m ran2wiki.cli "$@"
